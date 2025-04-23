@@ -1,9 +1,0 @@
-Opção 1:
-
-Classificação de espécies sobre o dataset iNaturalist
-Dataset: iNaturalist
-
-Opção 2:
-
-Segmentação de instância de toras
-Dataset: TimberVision, MSCOCO
