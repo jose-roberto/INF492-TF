@@ -64,4 +64,5 @@ falta de recurso de processamento. Dessa forma, estamos considerando utilizar a 
 - [iNaturalist on PyTorch](https://pytorch.org/vision/stable/generated/torchvision.datasets.INaturalist.html)
 - [Deep CNNs for large scale species classification - paperswithcode](https://paperswithcode.com/paper/deep-cnns-for-large-scale-species)
 - [A gentle introduction to computer vision-based specimen classification in ecological datasets](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.14042)
+- [EfficientNet](https://www.geeksforgeeks.org/efficientnet-architecture/)
 
