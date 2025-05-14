@@ -34,29 +34,14 @@ Plano de execução dos experimentos: o que será treinado, testado, comparado, 
 
 #### 1 - Escolher duas ou mais redes para treino, teste e comparação:
 
-Opções:
-  - ResNet
-  - U-Net
-  - FCN
-  - VGG
+A comparação será feita entre a ResNet50 incializada com os pesos da ImageNet e a EfficientNet também inicializada com os pesos da ImageNet.
 
 A ideia é realizar a comparação entre duas ou mais redes, aplicando pelo menos dois dos seguintes conceitos: transfer learning, extração de features ou
 classificação direta.
 
 #### 2 - Onde será executado:
 
-Temos três opções:
-  - Google Colab ou outra plataforma que disponibilize GPU
-  - GeoDEF
-  - MaVILab
-
-## Atuais dúvidas:
-O dataset completo apresenta mais de dois milhões de imagens (224GB) apenas na seção referente ao treino. Imaginamos que será inviável treinar com tantos dados por
-falta de recurso de processamento. Dessa forma, estamos considerando utilizar a versão reduzida que contém 600.000 juntando treino e validação (50,4GB).
-
-- Conseguimos treinar com os 224GB de treino? Provavelmente não
-- Conseguimos treinar com 504GB de treino e validação?
-- Caso não seja possível podemos diminuir ainda mais o dataset? Se sim, quais cuidados tomar?
+Iremos utilizar máquinas do GeoDEF e do MaVILab. (detalhar especificação das máquinas)
 
 ## Referências e/ou links úteis:
 - [iNaturalist - paperswithcode](https://paperswithcode.com/paper/the-inaturalist-species-classification-and)
@@ -65,4 +50,5 @@ falta de recurso de processamento. Dessa forma, estamos considerando utilizar a 
 - [Deep CNNs for large scale species classification - paperswithcode](https://paperswithcode.com/paper/deep-cnns-for-large-scale-species)
 - [A gentle introduction to computer vision-based specimen classification in ecological datasets](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.14042)
 - [EfficientNet](https://www.geeksforgeeks.org/efficientnet-architecture/)
+- [Benchmarking Representation Learning for Natural World Image Collections](https://arxiv.org/pdf/2103.16483)
 
