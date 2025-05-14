@@ -51,4 +51,4 @@ Iremos utilizar máquinas do GeoDEF e do MaVILab. (detalhar especificação das 
 - [A gentle introduction to computer vision-based specimen classification in ecological datasets](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.14042)
 - [EfficientNet](https://www.geeksforgeeks.org/efficientnet-architecture/)
 - [Benchmarking Representation Learning for Natural World Image Collections](https://arxiv.org/pdf/2103.16483)
-
+- [iNat Challenge 2021 - FGVC8 - Discussion](https://www.kaggle.com/competitions/inaturalist-2021/discussion/242521)
