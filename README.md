@@ -52,3 +52,4 @@ Iremos utilizar máquinas do GeoDEF e do MaVILab. (detalhar especificação das 
 - [EfficientNet](https://www.geeksforgeeks.org/efficientnet-architecture/)
 - [Benchmarking Representation Learning for Natural World Image Collections](https://arxiv.org/pdf/2103.16483)
 - [iNat Challenge 2021 - FGVC8 - Discussion](https://www.kaggle.com/competitions/inaturalist-2021/discussion/242521)
+- [Yolo v11 - Classification](https://docs.ultralytics.com/tasks/classify/)
