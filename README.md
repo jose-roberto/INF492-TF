@@ -1,47 +1,48 @@
 # Classificação de espécies sobre o dataset iNaturalist
 
-## Definição do tema
+## Entrega parcial
 
-- Escolhido: Classificação de espécies sobre o dataset iNaturalist
-- Segunda opção: Segmentação de instância de toras sobre o dataset TimberVision 
+### Motivação para abordar esse problema:
+Interesse em aplicar Visão Computacional no campo da biologia.
 
-## Rascunho da entrega parcial
-
-### Parte 1
-
-É necessário apresentar em detalhes o problema a ser abordado, a motivação para abordar esse problema e uma aplicação prática do mesmo.
-
-#### Dataset escolhido: iNaturalist
-- Realizar descrição mais detalhada
-
-#### Detalhes do problema a ser abordado:
-- Explicar o que é classificação
-- Detalhar complexidade do problema de classificação de espécies: basicamente a enorme variabilidade de formas, cores, etc na composição do dado
-
-#### Motivação para abordar esse problema:
-
-Inicialmente iríamos abordar um tema relacionado à IC do José, mas não havia dado disponível, assim mudamos para uma temática que já era do nosso interesse:
-Visão Computacional aplicada na área da biologia. Pesquisando dentro deste escopo encontramos com facilidade um dataset super robusto.
-
-#### Aplicação prática do mesmo:
-
+### Aplicação prática:
 O problema de classificação de espécies pode ser aplicado em diversos ramos dentro da área biológica, como, por exemplo: pesquisa ecológica,
 monitoramento de biodiversidade, conservação de animais, conservação de vida selvagem.
 
-### Parte 2
+### Detalhamento do dataset
+Características do dado:
+- Grande variabilidade de formas e cores
+- Imagens com mais de uma espécie
+- Espécies parecidas
+- Espaço de cor RGB e extensão .jpg
+- Resoluções diferentes
+- Número de classes: 10.000 espécies
+- Amostras por classe: 50
+- Quantidade total de imagens: 500.000
 
-Plano de execução dos experimentos: o que será treinado, testado, comparado, onde será executado, contra quem será comparado, etc.
+### Plano de execução dos experimentos
 
-#### 1 - Escolher duas ou mais redes para treino, teste e comparação:
+- O dataset já possui um split em treino, validação e teste. Será nosso ponto de partida.
 
-A comparação será feita entre a ResNet50 incializada com os pesos da ImageNet e a EfficientNet também inicializada com os pesos da ImageNet.
+- Arquiteturas escolhidas:
+  EfficientNet
+  YOLO11
 
-A ideia é realizar a comparação entre duas ou mais redes, aplicando pelo menos dois dos seguintes conceitos: transfer learning, extração de features ou
-classificação direta.
+- Onde será executado?
 
-#### 2 - Onde será executado:
+  GeoDEF - pcB:
+  - Intel i7-12700 2.10 GHz
+  - NVIDIA T1000 4GB
+  - 64GB RAM
+  - Windows
 
-Iremos utilizar máquinas do GeoDEF e do MaVILab. (detalhar especificação das máquinas)
+  MaVILab - proc2:
+  - Intel i7-12700K 2.10 GHz
+  - NVIDIA GeForce RTX 4090 24GB
+  - 126GB RAM
+  - Ubuntu
+
+- Comparação com o benchmark de Van Horn et al. (ResNet50)
 
 ## Referências e/ou links úteis:
 - [iNaturalist - paperswithcode](https://paperswithcode.com/paper/the-inaturalist-species-classification-and)
