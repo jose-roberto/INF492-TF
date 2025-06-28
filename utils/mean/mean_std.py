@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 import glob, os
 
-root_dir = '/home/jroberto/INF492-TF/dataset/2021_train_mini/'
+root_dir = '/home/jroberto/INF492-TF/dataset/nabirds/versions/1/images'
 
 paths = []
 

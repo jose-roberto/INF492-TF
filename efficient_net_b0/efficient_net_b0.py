@@ -29,7 +29,7 @@ print("Device definido:", device)
 
 # Experiment setup
 setup = {
-    "experiment": "ResNet50_unfreeze-700-SGD-CELoss-e50",
+    "experiment": "EfficientNetB0_unfreeze-700-SGD-CELoss-e50",
     "num_classes": 700,
     "batch_size": 64,
     "num_workers": 8,
@@ -127,7 +127,7 @@ class NABirdsDataset(Dataset):
             self.num_classes = len(unique_labels)
         else:
             self.samples = raw_samples
-            self.num_classes = len(sorted({lbl for _,lbl in raw_samples})) 
+            self.num_classes = len(sorted({lbl for _,lbl in raw_samples}))
 
     def __len__(self):
         return len(self.samples)
@@ -153,7 +153,6 @@ val_dataset = NABirdsDataset(
     transform=val_transform
 )
 
-## Dataloader
 train_dataloader = DataLoader(
     train_dataset,
     batch_size=setup["batch_size"],
@@ -171,21 +170,19 @@ val_dataloader = DataLoader(
 )
 
 # Architecture
-weights = models.ResNet50_Weights.IMAGENET1K_V1
+weights = models.EfficientNet_B0_Weights.IMAGENET1K_V1
 
-net = models.resnet50(weights=weights)
+net = models.efficientnet_b0(weights=weights)
 
 # for param in net.parameters():
 #     param.requires_grad = False
 
-# for name, param in net.layer4.named_parameters():
-#         param.requires_grad = True
-
 # for name, param in net.named_parameters():
-#     if 'layer4.1' in  name:
+#     if 'features.6.' in  name or 'features.7.' in  name or 'features.8.' in name:
 #         param.requires_grad = True
-    
-net.fc = nn.Linear(net.fc.in_features, setup["num_classes"])
+        
+num_features = net.classifier[1].in_features
+net.classifier[1] = nn.Linear(num_features, setup['num_classes'])
 
 # Train
 def train(net, train_dataloader, val_dataloader, device, tensorboard_path):
