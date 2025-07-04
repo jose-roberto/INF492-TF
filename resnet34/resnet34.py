@@ -32,7 +32,7 @@ print("Device definido:", device)
 
 # Experiment setup
 setup = {
-    "experiment": "EfficientNetB0_3LLU-AdamW-WCELoss-A",
+    "experiment": "ResNet34_L4U-AdamW-WCELoss-A",
     "num_classes": 555,
     "batch_size": 32,
     "num_workers": 8,
@@ -72,7 +72,7 @@ train_transform = transforms.Compose([
     transforms.RandomHorizontalFlip(p=0.5),
     transforms.RandomVerticalFlip(p=0.5),
     transforms.RandomRotation(degrees=15),
-    
+
     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
     transforms.GaussianBlur(kernel_size=5, sigma=(0.1, 2.0)),
     transforms.RandomAdjustSharpness(sharpness_factor=2.0, p=0.2),
@@ -140,7 +140,7 @@ class NABirdsDataset(Dataset):
             self.num_classes = len(unique_labels)
         else:
             self.samples = raw_samples
-            self.num_classes = len(sorted({lbl for _,lbl in raw_samples}))
+            self.num_classes = len(sorted({lbl for _,lbl in raw_samples})) 
 
     def __len__(self):
         return len(self.samples)
@@ -166,6 +166,7 @@ val_dataset = NABirdsDataset(
     transform=val_transform
 )
 
+## Dataloader
 train_dataloader = DataLoader(
     train_dataset,
     batch_size=setup["batch_size"],
@@ -183,19 +184,22 @@ val_dataloader = DataLoader(
 )
 
 # Architecture
-weights = models.EfficientNet_B0_Weights.IMAGENET1K_V1
+weights = models.ResNet34_Weights.IMAGENET1K_V1
 
-net = models.efficientnet_b0(weights=weights)
+net = models.resnet34(weights=weights)
 
 for param in net.parameters():
     param.requires_grad = False
 
-for name, param in net.named_parameters():
-    if 'features.6.' in  name or 'features.7.' in  name or 'features.8.' in name:
+for name, param in net.layer4.named_parameters():
         param.requires_grad = True
-        
-num_features = net.classifier[1].in_features
-net.classifier[1] = nn.Linear(num_features, setup['num_classes'])
+
+in_features = net.fc.in_features
+
+net.fc = nn.Sequential(
+    nn.Dropout(p=0.2),
+    nn.Linear(in_features, setup["num_classes"])
+)
 
 # Criterion class weights
 def calculate_class_weights():
@@ -209,7 +213,7 @@ def calculate_class_weights():
     class_weights = [w/s for w in class_weights]
 
     return class_weights
-
+    
 # Train
 def train(net, train_dataloader, val_dataloader, device, tensorboard_path):
   
@@ -225,7 +229,7 @@ def train(net, train_dataloader, val_dataloader, device, tensorboard_path):
         filter(lambda p: p.requires_grad, net.parameters()),
         lr=setup['lr'],
         weight_decay=setup['weight_decay'])
-
+    
     class_weights = calculate_class_weights()
     weight_tensor = tensor(class_weights, dtype=torch.float32).to(device)
     criterion = nn.CrossEntropyLoss(weight=weight_tensor)

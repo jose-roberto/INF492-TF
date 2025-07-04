@@ -1,0 +1,16 @@
+name: inf492
+channels:
+  - defaults
+dependencies:
+  - pytorch
+  - pytorch-cuda
+  - torchaudio
+  - torchvision
+  - conda-forge::torchinfo
+  - conda-forge::matplotlib
+  - conda-forge::tensorboard
+  - jupyter
+  - jupyterlab-git
+  - git
+  - anaconda::kagglehub
+prefix: /home/jroberto/anaconda3/envs/inf492

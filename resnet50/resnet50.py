@@ -10,6 +10,7 @@ from PIL import Image
 from tqdm import tqdm
 
 import torch
+from torch import tensor
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
@@ -18,6 +19,8 @@ from torchvision.transforms import ToTensor
 from torchvision import transforms, models
 
 from torchinfo import summary
+
+from collections import Counter
 
 # Checking device
 print("CUDA?", torch.cuda.is_available())
@@ -29,15 +32,15 @@ print("Device definido:", device)
 
 # Experiment setup
 setup = {
-    "experiment": "ResNet50_unfreeze-700-SGD-CELoss-e50",
-    "num_classes": 700,
-    "batch_size": 64,
+    "experiment": "ResNet50_L4U-SGD-CELoss",
+    "num_classes": 555,
+    "batch_size": 32,
     "num_workers": 8,
-    "criterion": nn.CrossEntropyLoss(),
     "lr": 1e-3,
     "weight_decay": 1e-4,
     "momentum": 0.9,
-    "max_epochs": 50
+    "max_epochs": 40,
+    "comments": "Sem augmentation, poucas camadas descongeladas"
 }
 
 tensorboard_path = './experiments'
@@ -63,16 +66,26 @@ mean = [0.493, 0.509, 0.463]
 std = [0.223, 0.222, 0.268]
 
 train_transform = transforms.Compose([
-    transforms.Resize((224,224)),
-    
-    transforms.RandomHorizontalFlip(),
-    
+    transforms.Resize((256, 256)),
+    transforms.RandomCrop((224, 224)),
+                             
+    # transforms.RandomHorizontalFlip(p=0.5),
+    # transforms.RandomVerticalFlip(p=0.5),
+    # transforms.RandomRotation(degrees=15),
+
+    # transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+    # transforms.GaussianBlur(kernel_size=5, sigma=(0.1, 2.0)),
+    # transforms.RandomAdjustSharpness(sharpness_factor=2.0, p=0.2),
+                             
     transforms.ToTensor(),
     transforms.Normalize(mean=mean, std=std),
+
+    # transforms.RandomErasing(p=0.2, scale=(0.02, 0.1), ratio=(0.3, 3.3)),
 ])
 
 val_transform = transforms.Compose([
-    transforms.Resize((224,224)),
+    transforms.Resize((256, 256)),
+    transforms.CenterCrop((224, 224)),
     
     transforms.ToTensor(),
     transforms.Normalize(mean=mean, std=std),
@@ -175,18 +188,32 @@ weights = models.ResNet50_Weights.IMAGENET1K_V1
 
 net = models.resnet50(weights=weights)
 
-# for param in net.parameters():
-#     param.requires_grad = False
+for param in net.parameters():
+    param.requires_grad = False
 
-# for name, param in net.layer4.named_parameters():
-#         param.requires_grad = True
+for name, param in net.layer4.named_parameters():
+        param.requires_grad = True
 
-# for name, param in net.named_parameters():
-#     if 'layer4.1' in  name:
-#         param.requires_grad = True
+in_features = net.fc.in_features
+
+net.fc = nn.Sequential(
+    nn.Dropout(p=0.2),
+    nn.Linear(in_features, setup["num_classes"])
+)
+
+# Criterion class weights
+def calculate_class_weights():
+    counts = Counter([lbl for _,lbl in train_dataset.samples])
+    total = sum(counts.values())
     
-net.fc = nn.Linear(net.fc.in_features, setup["num_classes"])
+    class_weights = [ total / counts[i] if counts[i]>0 else 0.0
+                      for i in range(setup["num_classes"]) ]
+    
+    s = sum(class_weights)
+    class_weights = [w/s for w in class_weights]
 
+    return class_weights
+    
 # Train
 def train(net, train_dataloader, val_dataloader, device, tensorboard_path):
   
@@ -197,8 +224,13 @@ def train(net, train_dataloader, val_dataloader, device, tensorboard_path):
         lr=setup['lr'],
         weight_decay=setup['weight_decay'],
         momentum=setup['momentum'])
+    
+    # class_weights = calculate_class_weights()
+    # weight_tensor = tensor(class_weights, dtype=torch.float32).to(device)
+    # criterion = nn.CrossEntropyLoss(weight=weight_tensor)
+    
+    criterion = nn.CrossEntropyLoss()
 
-    criterion = setup['criterion']
     criterion.to(device)
 
     now = datetime.now()
